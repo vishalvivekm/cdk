@@ -18,5 +18,7 @@ func HandleRequest(event MyEvent) (string, error){
 }
 
 func main() {
+	// lambda.Start is not calling this func, but is passed a func to call, when the lambda
+	// is invoked
 	lambda.Start(HandleRequest)
 }

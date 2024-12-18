@@ -21,6 +21,8 @@ func NewGocdkStack(scope constructs.Construct, id string, props *GocdkStackProps
 
 	awslambda.NewFunction(stack, jsii.String("myLambdaFunc"),&awslambda.FunctionProps{
 		Runtime: awslambda.Runtime_PROVIDED_AL2023(),
+		// Code: awslambda.AssetCode_FromAssetImage()
+		// Code: awslambda.S3Code_FromBucket()
 		Code: awslambda.AssetCode_FromAsset(jsii.String("lambda/function.zip"), nil),
 		Handler: jsii.String("main"),
 	})
@@ -35,17 +37,18 @@ func NewGocdkStack(scope constructs.Construct, id string, props *GocdkStackProps
 }
 
 func main() {
-	defer jsii.Close()
+	// most of the CDK code is written in TypeScript but it supports multiple languages through JSII
+	defer jsii.Close() // defers closing of JSII runtime which enables Go code to interact with CDK's TypeScript constructs to communicate with cdk
 
-	app := awscdk.NewApp(nil)
+	app := awscdk.NewApp(nil) // create app
 
 	NewGocdkStack(app, "GocdkStack", &GocdkStackProps{
 		awscdk.StackProps{
 			Env: env(),
 		},
-	})
+	}) // define stack
 
-	app.Synth(nil)
+	app.Synth(nil) // synthesize the stack
 }
 
 func env() *awscdk.Environment {
