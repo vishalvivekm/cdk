@@ -78,7 +78,7 @@ func (api ApiHandler) LoginUser(request events.APIGatewayProxyRequest)(events.AP
 	}
 	var loginRequest LoginRequest
 
-	err := json.Unmarshal([]byte(request.Body), loginRequest)
+	err := json.Unmarshal([]byte(request.Body), &loginRequest)
 	if err != nil {
 		return events.APIGatewayProxyResponse{
 			Body: "Invalid request",
