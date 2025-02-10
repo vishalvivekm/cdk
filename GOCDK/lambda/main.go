@@ -7,6 +7,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-lambda-go/events"
 	"net/http"
+	"vishalvivekm/lambda-func/middleware"
 )
 
 type MyEvent struct {
@@ -20,6 +21,13 @@ func HandleRequest(event MyEvent) (string, error){
 	return fmt.Sprintf("Successfully called by ~ %s", event.Username), nil
 }
 
+
+func ProtectedHanlder(request events.APIGatewayProxyRequest)(events.APIGatewayProxyResponse, error){
+	return events.APIGatewayProxyResponse{
+		Body: "a secret resource",
+		StatusCode: http.StatusOK,
+	}, nil
+}
 func main() {
 	// lambda.Start is not calling this func, but is passed a func to call, when the lambda
 	// is invoked
@@ -30,6 +38,8 @@ func main() {
 			return myApp.ApiHandler.RegisterUserHandler(request)
 		case "/login":
 			return myApp.ApiHandler.LoginUser(request)
+		case "/protected":
+			return middleware.ValidateJWTMiddleware(ProtectedHanlder)(request)
 		default:
 			return events.APIGatewayProxyResponse{
 			Body: "Not found",
